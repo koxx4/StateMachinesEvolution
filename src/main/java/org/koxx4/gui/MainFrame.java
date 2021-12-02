@@ -6,12 +6,11 @@ import java.awt.*;
 public class MainFrame extends JFrame {
 
     public MainFrame() throws HeadlessException {
-        super();
+        this("StateMachines Evolution");
     }
 
     public MainFrame(String title) throws HeadlessException {
         super(title);
     }
-
 
 }
