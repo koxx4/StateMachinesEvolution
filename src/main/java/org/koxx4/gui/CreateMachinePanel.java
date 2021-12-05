@@ -1,5 +1,7 @@
 package org.koxx4.gui;
 
+import org.koxx4.utilities.SimpleStateEquationFormatter;
+import org.koxx4.utilities.SyntaxFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +14,7 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
 
 public class CreateMachinePanel extends JPanel {
 
@@ -22,6 +25,9 @@ public class CreateMachinePanel extends JPanel {
     private final JTextField equationArea;
     private final JButton drawButton;
     private final GraphArea graphArea;
+    private final SyntaxFormatter syntaxFormatter;
+    private String formattedEquation;
+    private Font robotoMonoFont;
 
     public CreateMachinePanel() {
         super();
@@ -29,6 +35,7 @@ public class CreateMachinePanel extends JPanel {
         initializeExternalFonts();
 
         this.logger = LoggerFactory.getLogger(CreateMachinePanel.class);
+        this.syntaxFormatter = new SimpleStateEquationFormatter();
         this.layoutManager = new GridBagLayout();
         this.inputDescription = new JLabel("Enter your equation:");
         this.prettyEquationArea = new JLabel();
@@ -43,13 +50,16 @@ public class CreateMachinePanel extends JPanel {
 
     private void initializeComponentsProperties(){
         this.inputDescription.setForeground(Color.LIGHT_GRAY);
-        this.inputDescription.setFont(Font.getFont("roboto-mono"));
+        this.inputDescription.setFont(new Font("Roboto Mono", Font.PLAIN, 15));
 
-        this.prettyEquationArea.setForeground(Color.LIGHT_GRAY);
-        this.prettyEquationArea.setFont(Font.getFont("roboto-mono"));
+        this.equationArea.setPreferredSize(new Dimension(500,30));
+        this.equationArea.setFont(new Font("Roboto Mono", Font.PLAIN, 14));
 
-        this.equationArea.setPreferredSize(new Dimension(500,20));
-        this.prettyEquationArea.setPreferredSize(equationArea.getPreferredSize());
+        this.prettyEquationArea.setForeground(Color.BLACK);
+        this.prettyEquationArea.setBackground(new Color(220,220,220));
+        this.prettyEquationArea.setOpaque(true);
+        this.prettyEquationArea.setPreferredSize(new Dimension(2000,30));
+        this.prettyEquationArea.setFont(new Font("Roboto Mono", Font.PLAIN, 18));
 
         this.setBackground(Color.DARK_GRAY);
     }
@@ -79,11 +89,28 @@ public class CreateMachinePanel extends JPanel {
 
             @Override
             public void keyReleased(KeyEvent keyEvent) {
-                prettyEquationArea.setText(equationArea.getText());
+                new SwingWorker<String, Void>() {
+                    @Override
+                    protected String doInBackground() throws Exception {
+
+                        return "<html>"
+                                + syntaxFormatter.format(equationArea.getText())
+                                + "</html>";
+                    }
+
+                    @Override
+                    protected void done() {
+                        try {
+                            prettyEquationArea.setText(get());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.execute();
+
+
             }
         });
-
-
     }
 
     private void drawGraph(ActionEvent actionEvent){
@@ -121,7 +148,11 @@ public class CreateMachinePanel extends JPanel {
         gbc.gridwidth = 10;
         gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        add(prettyEquationArea, gbc);
+        var v = new JScrollPane(prettyEquationArea);
+        v.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        v.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        v.setPreferredSize(new Dimension(500, 60));
+        add(v, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 9;
