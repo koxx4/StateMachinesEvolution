@@ -12,7 +12,6 @@ import java.net.URISyntaxException;
 
 public class App {
 
-
     public static void main( String[] args ) {
         Logger logger = LoggerFactory.getLogger("App");
         logger.debug("Loading app properties");
@@ -21,14 +20,18 @@ public class App {
 
         logger.debug("Creating JFrame");
         runApplication();
-        logger.debug("Successfully create JFrame");
+        logger.debug("Successfully created JFrame");
     }
 
     public static void runApplication(){
+        System.setProperty("awt.useSystemAAFontSettings","on");
+        System.setProperty("swing.aatext", "true");
         SwingUtilities.invokeLater(() -> {
             try{
+                UIManager.setLookAndFeel(
+                        UIManager.getSystemLookAndFeelClassName());
                 MainFrame frame = new MainFrame();
-            } catch (HeadlessException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });

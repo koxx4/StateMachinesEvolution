@@ -26,6 +26,7 @@ public class MainFrame extends JFrame {
         simulateMachinePanel = new SimulateMachinePanel();
         analysePanel = new AnalysePanel();
         setActivePanel(createMachinePanel);
+        pack();
     }
 
     private void initializeFrameProperties(){
