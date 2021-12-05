@@ -6,15 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
-import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.concurrent.ExecutionException;
+
 
 public class CreateMachinePanel extends JPanel {
 
@@ -26,8 +23,8 @@ public class CreateMachinePanel extends JPanel {
     private final JButton drawButton;
     private final GraphArea graphArea;
     private final SyntaxFormatter syntaxFormatter;
-    private String formattedEquation;
-    private Font robotoMonoFont;
+    private final JScrollPane prettyEquationScrollPane;
+    private final JScrollPane graphAreaScrollPane;
 
     public CreateMachinePanel() {
         super();
@@ -42,6 +39,8 @@ public class CreateMachinePanel extends JPanel {
         this.equationArea = new JTextField();
         this.drawButton = new JButton("Draw graph");
         this.graphArea = new GraphArea();
+        this.prettyEquationScrollPane = new JScrollPane(prettyEquationArea);
+        this.graphAreaScrollPane = new JScrollPane(graphArea);
 
         initializeComponentsProperties();
         initializeLayout();
@@ -60,6 +59,13 @@ public class CreateMachinePanel extends JPanel {
         this.prettyEquationArea.setOpaque(true);
         this.prettyEquationArea.setPreferredSize(new Dimension(2000,30));
         this.prettyEquationArea.setFont(new Font("Roboto Mono", Font.PLAIN, 18));
+
+        this.prettyEquationScrollPane.setPreferredSize(new Dimension(500, 60));
+        this.prettyEquationScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        this.graphAreaScrollPane.setPreferredSize(new Dimension(300, 300));
+        this.graphAreaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        this.graphAreaScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         this.setBackground(Color.DARK_GRAY);
     }
@@ -148,18 +154,14 @@ public class CreateMachinePanel extends JPanel {
         gbc.gridwidth = 10;
         gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.BOTH;
-        var v = new JScrollPane(prettyEquationArea);
-        v.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        v.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        v.setPreferredSize(new Dimension(500, 60));
-        add(v, gbc);
+        add(prettyEquationScrollPane, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 9;
         gbc.gridwidth = 10;
         gbc.gridheight = 10;
         gbc.fill = GridBagConstraints.BOTH;
-        add(graphArea, gbc);
+        add(graphAreaScrollPane, gbc);
 
         gbc.gridheight = 1;
     }

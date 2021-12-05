@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
-public class GraphArea extends Canvas {
+public class GraphArea extends JComponent {
 
     public GraphArea() {
         super();
@@ -17,7 +17,7 @@ public class GraphArea extends Canvas {
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         Rectangle2D.Double rectangle = new Rectangle2D.Double(30,30, 200,200);
-        g2d.setBackground(Color.BLUE);
+        g2d.setColor(Color.BLUE);
         g2d.fill(rectangle);
     }
 
