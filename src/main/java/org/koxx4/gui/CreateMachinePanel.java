@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -83,16 +84,7 @@ public class CreateMachinePanel extends JPanel {
     private void initializeActionListeners(){
         this.drawButton.addActionListener(this::drawGraph);
 
-        this.equationArea.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent keyEvent) {
-
-            }
-
-            @Override
-            public void keyPressed(KeyEvent keyEvent) {
-            }
-
+        this.equationArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent keyEvent) {
                 new SwingWorker<String, Void>() {
@@ -113,10 +105,11 @@ public class CreateMachinePanel extends JPanel {
                         }
                     }
                 }.execute();
-
-
             }
         });
+
+
+
     }
 
     private void drawGraph(ActionEvent actionEvent){
