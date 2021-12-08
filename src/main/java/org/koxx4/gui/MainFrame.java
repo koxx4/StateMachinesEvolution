@@ -52,7 +52,7 @@ public class MainFrame extends JFrame {
         modesMenu.add(simulateMachineModeMenuItem);
         modesMenu.add(analyseMachineModeMenuItem);
         menuBar.add(modesMenu);
-        this.add(menuBar, BorderLayout.NORTH);
+        this.setJMenuBar(menuBar);
     }
 
     private void setActivePanel(JPanel panel){
