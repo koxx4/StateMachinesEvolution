@@ -1,5 +1,7 @@
 package org.koxx4.gui;
 
+import org.koxx4.utilities.MachineDecoder;
+import org.koxx4.utilities.MooreMachineDecoder;
 import org.koxx4.utilities.SimpleStateEquationFormatter;
 import org.koxx4.utilities.SyntaxFormatter;
 import org.slf4j.Logger;
@@ -10,7 +12,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 
 
@@ -20,28 +21,30 @@ public class CreateMachinePanel extends JPanel {
     private final LayoutManager layoutManager;
     private final JLabel inputDescription;
     private final JLabel prettyEquationArea;
+    private final JLabel parsingErrorMsgLabel;
     private final JTextField equationArea;
     private final JButton drawButton;
     private final GraphArea graphArea;
     private final SyntaxFormatter syntaxFormatter;
     private final JScrollPane prettyEquationScrollPane;
     private final JScrollPane graphAreaScrollPane;
+    private final JScrollPane parsingErrorMsgScrollPane;
 
     public CreateMachinePanel() {
         super();
-
-        initializeExternalFonts();
 
         this.logger = LoggerFactory.getLogger(CreateMachinePanel.class);
         this.syntaxFormatter = new SimpleStateEquationFormatter();
         this.layoutManager = new GridBagLayout();
         this.inputDescription = new JLabel("Enter your equation:");
         this.prettyEquationArea = new JLabel();
+        this.parsingErrorMsgLabel = new JLabel();
         this.equationArea = new JTextField();
         this.drawButton = new JButton("Draw graph");
         this.graphArea = new GraphArea();
         this.prettyEquationScrollPane = new JScrollPane(prettyEquationArea);
         this.graphAreaScrollPane = new JScrollPane(graphArea);
+        this.parsingErrorMsgScrollPane = new JScrollPane(parsingErrorMsgLabel);
 
         initializeComponentsProperties();
         initializeLayout();
@@ -52,6 +55,9 @@ public class CreateMachinePanel extends JPanel {
         this.inputDescription.setForeground(Color.LIGHT_GRAY);
         this.inputDescription.setFont(new Font("Roboto Mono", Font.PLAIN, 15));
 
+        this.parsingErrorMsgLabel.setForeground(new Color(255, 61, 61));
+        this.parsingErrorMsgLabel.setFont(new Font("Roboto Mono", Font.PLAIN, 14));
+
         this.equationArea.setPreferredSize(new Dimension(500,30));
         this.equationArea.setFont(new Font("Roboto Mono", Font.PLAIN, 14));
 
@@ -61,24 +67,19 @@ public class CreateMachinePanel extends JPanel {
         this.prettyEquationArea.setPreferredSize(new Dimension(2000,30));
         this.prettyEquationArea.setFont(new Font("Roboto Mono", Font.PLAIN, 18));
 
+        this.parsingErrorMsgScrollPane.setPreferredSize(new Dimension(500, 60));
+        this.parsingErrorMsgScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        this.parsingErrorMsgScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
         this.prettyEquationScrollPane.setPreferredSize(new Dimension(500, 60));
         this.prettyEquationScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
-        this.graphAreaScrollPane.setPreferredSize(new Dimension(300, 300));
+        this.graphAreaScrollPane.setPreferredSize(new Dimension(400, 400));
+        this.graphAreaScrollPane.setMinimumSize(new Dimension(300, 300));
         this.graphAreaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         this.graphAreaScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
         this.setBackground(Color.DARK_GRAY);
-    }
-
-    private void initializeExternalFonts() {
-        GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        try {
-            graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT,
-                    new File(getClass().getResource("/fonts/roboto-mono.ttf").toURI())));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void initializeActionListeners(){
@@ -114,6 +115,26 @@ public class CreateMachinePanel extends JPanel {
 
     private void drawGraph(ActionEvent actionEvent){
         this.logger.info("Trying to draw graph");
+
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                MachineDecoder decoder = new MooreMachineDecoder();
+                try {
+                    decoder.decodeFromEquation(equationArea.getText());
+                } catch (Exception exception){
+                    parsingErrorMsgLabel.setText(exception.getMessage());
+                    parsingErrorMsgLabel.setVisible(true);
+                }
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+            }
+        }.execute();
+
     }
 
     private void initializeLayout(){
@@ -150,7 +171,14 @@ public class CreateMachinePanel extends JPanel {
         add(prettyEquationScrollPane, gbc);
 
         gbc.gridx = 0;
-        gbc.gridy = 9;
+        gbc.gridy = 8;
+        gbc.gridwidth = 10;
+        gbc.gridheight = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(parsingErrorMsgScrollPane, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 10;
         gbc.gridwidth = 10;
         gbc.gridheight = 10;
         gbc.fill = GridBagConstraints.BOTH;

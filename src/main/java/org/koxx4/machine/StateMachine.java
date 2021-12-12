@@ -24,12 +24,12 @@ public abstract class StateMachine<StateType extends State>{
         return states;
     }
 
-    public void addAllStates(List<StateType> states){
-        this.states.addAll(states);
-    }
-
     public void addState(StateType state){
         this.states.add(state);
+    }
+
+    public void addAllStates(List<StateType> states){
+        this.states.addAll(states);
     }
 
 }

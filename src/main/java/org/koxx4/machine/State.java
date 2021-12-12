@@ -5,9 +5,11 @@ import java.util.List;
 
 public abstract class State {
     private final List<Edge> edges;
+    private String name;
 
-    public State() {
+    public State(String name) {
         edges = new ArrayList<>();
+        this.name = name;
     }
 
     public void addEdge(Edge edge){

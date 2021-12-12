@@ -4,8 +4,8 @@ public class MooreState extends State{
 
     private final int outputValue;
 
-    public MooreState(int outputValue) {
-        super();
+    public MooreState(String name, int outputValue) {
+        super(name);
         this.outputValue = outputValue;
     }
 
