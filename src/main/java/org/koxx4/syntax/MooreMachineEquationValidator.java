@@ -47,15 +47,22 @@ public class MooreMachineEquationValidator implements SyntaxValidator{
         char[] tokens = equation.toCharArray();
         for (int i = 0; i < tokens.length; i++){
 
+            if (tokens[i] != '(' && tokens[i] != ')')
+                continue;
+
             if (tokens[i] == '(') {
                 openingParentheses.push(i);
                 continue;
             }
 
             if (openingParentheses.isEmpty())
-                throw new InvalidStateMachineEquation("Missing closing ')' at position " + (i + 1));
+                throw new InvalidStateMachineEquation("Missing opening '(' of the closing one at position " + (i + 1));
+
             openingParentheses.pop();
         }
+        if (!openingParentheses.isEmpty())
+            throw new InvalidStateMachineEquation("Missing closing ')' of the opening one at position " +
+                    (openingParentheses.pop() + 1));
     }
 
 }
