@@ -49,7 +49,6 @@ public class Token implements Comparable<Token>{
         return value;
     }
 
-
     @Override
     public int compareTo(Token token) {
        return this.value.compareTo(token.getValue());

@@ -3,6 +3,7 @@ package org.koxx4.utilities;
 
 import org.koxx4.machine.*;
 import org.koxx4.syntax.InvalidSyntaxException;
+import org.koxx4.syntax.MooreMachineEquationValidator;
 import org.koxx4.syntax.SimpleSyntaxValidatorBuilder;
 import org.koxx4.syntax.SyntaxValidator;
 
@@ -36,34 +37,12 @@ public class MooreMachineDecoder implements MachineDecoder<MooreMachine>{
     }
 
     private void checkEquationForSyntaxErrors(String equation) throws InvalidStateMachineEquation {
-
-        if (!equation.startsWith("("))
-            throw new InvalidStateMachineEquation("Equation should start with '('");
-
-        if (!equation.endsWith(")"))
-            throw new InvalidStateMachineEquation("Equation should end with ')'");
-
-
-        SyntaxValidator syntaxValidator = new SimpleSyntaxValidatorBuilder()
-                .nextTokenShouldBeDistinctive("(", 1)
-                .nextTokenShouldBeDistinctive(ANY_LETTER, 1)
-                .nextTokenShouldBeDistinctive(ANY_LETTER, 1).orDistinctive(ANY_DIGIT, 1)
-                .nextTokenShouldBeDistinctive(ANY_DIGIT, 1).orDistinctive("(", 2)
-                .nextTokenShouldBeDistinctive(ANY_LETTER,2)
-                .nextTokenShouldBeDistinctive(ANY_LETTER,2).orDistinctive(ANY_DIGIT,2)
-                .nextTokenShouldBeDistinctive(ANY_DIGIT, 2).orDistinctive(ANY_LETTER,3)
-                .nextTokenShouldBeDistinctive(ANY_LETTER,3).orDistinctive(ANY_DIGIT,3)
-                .nextTokenShouldBeDistinctive(ANY_DIGIT,3)
-                .orDistinctive("(", 2).or(",").or(")")
-                .nextTokenShouldBe(")").or(",")
-                .nextTokenShouldBeDistinctive(ANY_LETTER, 2)
-                .build();
+        SyntaxValidator syntaxValidator = new MooreMachineEquationValidator();
         try {
             syntaxValidator.validate(equation);
         } catch (InvalidSyntaxException exception){
             throw new InvalidStateMachineEquation(exception.getMessage());
         }
-
     }
 
     @Override
