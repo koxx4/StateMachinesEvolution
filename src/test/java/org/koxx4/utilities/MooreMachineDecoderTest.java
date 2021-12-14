@@ -8,6 +8,7 @@ public class MooreMachineDecoderTest {
 
     @Test
     public void decodeFromEquation_TestStatesCount() {
+
         MooreMachineDecoder decoder = new MooreMachineDecoder();
         try {
             var m = decoder.decodeFromEquation("(s0(x0s1(x1s1,x0s0),x0s0))");
@@ -21,8 +22,6 @@ public class MooreMachineDecoderTest {
         } catch (Exception e){
             e.printStackTrace();
         }
-
-
     }
 
     @Test

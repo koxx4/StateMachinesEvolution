@@ -27,7 +27,6 @@ public class MooreMachineDecoder implements MachineDecoder<MooreMachine> {
         Stack<MooreState> foundStates = new Stack<>();
         foundStates.push(currentState);
 
-
         //We assume default output sign because we can't infer it from equation
         MooreMachine machineToDecode = new MooreMachine(
                 new StateMachineConfiguration(currentState.getName(), firstFoundEdge.getName(), "y"));
@@ -58,7 +57,7 @@ public class MooreMachineDecoder implements MachineDecoder<MooreMachine> {
 
 
     private Transition<MooreState, MooreEdge> decodeNextTransition(MooreState lastState, String inputSign,
-                                            int currentTokenIndex, char[] tokens){
+                                            int currentTokenIndex, char[] tokens) throws InvalidStateMachineEquation {
         int inputIndex;
         StringBuilder indexBuilder = new StringBuilder();
         currentTokenIndex = currentTokenIndex + inputSign.length();
@@ -68,6 +67,9 @@ public class MooreMachineDecoder implements MachineDecoder<MooreMachine> {
             currentTokenIndex++;
         }
         inputIndex = Integer.parseInt(indexBuilder.toString());
+        if (inputIndex < 0)
+            throw new InvalidStateMachineEquation("Ummm... inputs cannot be indexed with a negative number");
+
         indexBuilder = new StringBuilder();
 
         currentTokenIndex += lastState.getName().length();
@@ -75,8 +77,11 @@ public class MooreMachineDecoder implements MachineDecoder<MooreMachine> {
             indexBuilder.append(tokens[currentTokenIndex]);
             currentTokenIndex++;
         }
-        MooreState foundState = new MooreState(lastState.getName(),
-                Integer.parseInt(indexBuilder.toString()), 0);
+        int stateIndex = Integer.parseInt(indexBuilder.toString());
+        if (stateIndex < 0)
+            throw new InvalidStateMachineEquation("Ummm... state cannot be indexed below 0");
+
+        MooreState foundState = new MooreState(lastState.getName(), stateIndex, 0);
 
         return new Transition<>(foundState, new MooreEdge(inputSign, inputIndex));
     }
@@ -90,7 +95,7 @@ public class MooreMachineDecoder implements MachineDecoder<MooreMachine> {
         }
     }
 
-    private MooreState getFirstState(String equation){
+    private MooreState getFirstState(String equation) throws InvalidStateMachineEquation {
         var tokens = equation.toCharArray();
         StringBuilder stateSignBuilder = new StringBuilder();
         StringBuilder stateIndexBuilder = new StringBuilder();
@@ -103,13 +108,16 @@ public class MooreMachineDecoder implements MachineDecoder<MooreMachine> {
             else
                 stateIndexBuilder.append(tokens[i]);
         }
+
+        int stateIndex = Integer.parseInt(stateIndexBuilder.toString());
+        if (stateIndex < 0)
+            throw new InvalidStateMachineEquation("Ummm... first state cannot be indexed below 0");
+
         return new MooreState(
-                stateSignBuilder.toString(),
-                Integer.parseInt(stateIndexBuilder.toString()),
-                0);
+                stateSignBuilder.toString(), stateIndex, 0);
     }
 
-    private MooreEdge getFirstFoundEdge(String equation, String stateSign){
+    private MooreEdge getFirstFoundEdge(String equation, String stateSign) throws InvalidStateMachineEquation {
         var tokens = equation.substring(equation.indexOf('(',1)).toCharArray();
         StringBuilder outputSignBuilder = new StringBuilder();
         StringBuilder outputIndexBuilder = new StringBuilder();
@@ -122,7 +130,11 @@ public class MooreMachineDecoder implements MachineDecoder<MooreMachine> {
             else
                 outputIndexBuilder.append(tokens[i]);
         }
-        return new MooreEdge(outputSignBuilder.toString(), Integer.parseInt(outputIndexBuilder.toString()));
+        int inputIndex = Integer.parseInt(outputIndexBuilder.toString());
+        if (inputIndex < 0)
+            throw new InvalidStateMachineEquation("Ummm... inputs cannot be indexed with a negative number");
+
+        return new MooreEdge(outputSignBuilder.toString(), inputIndex);
     }
 
     @Override
