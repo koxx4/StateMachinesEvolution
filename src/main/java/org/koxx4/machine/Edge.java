@@ -3,19 +3,25 @@ package org.koxx4.machine;
 import java.util.List;
 
 public abstract class Edge {
-    private final State startingState;
-    private final State endingState;
+    private final String name;
+    private final int index;
 
-    public Edge(State startingState, State endingState) {
-        this.startingState = startingState;
-        this.endingState = endingState;
+    public Edge(String name, int index) {
+        this.name = name;
+        this.index = index;
     }
 
-    public State getStartingState() {
-        return startingState;
+    public String getName() {
+        return name;
     }
 
-    public State getEndingState() {
-        return endingState;
+    public int getIndex() {
+        return index;
     }
+
+    @Override
+    public String toString() {
+        return name + index;
+    }
+
 }

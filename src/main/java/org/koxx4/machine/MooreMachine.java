@@ -1,15 +1,19 @@
 package org.koxx4.machine;
 
-public class MooreMachine extends StateMachine<MooreState>{
+import com.google.common.graph.MutableValueGraph;
+
+public class MooreMachine extends StateMachine<MooreState, MooreEdge>{
+
 
     public MooreMachine(StateMachineConfiguration configuration) {
         super(configuration);
     }
 
-    public static MooreMachine decodeFromEquation(String equation){
-        char[] equationTokens = equation.toCharArray();
-
-        return null;
+    public MooreMachine(MutableValueGraph<MooreState, MooreEdge> graph, StateMachineConfiguration configuration) {
+        super(graph, configuration);
     }
 
+    public MooreMachine(StateMachine<MooreState, MooreEdge> other) {
+        super(other);
+    }
 }

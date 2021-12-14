@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class MainFrame extends JFrame {
 
@@ -20,6 +21,7 @@ public class MainFrame extends JFrame {
     public MainFrame() throws HeadlessException {
         super(AppPropertiesHolder.getInstance().getMainWindowTitle());
         initializeFrameProperties();
+        initializeExternalFonts();
         initializeMenuBar();
 
         createMachinePanel = new CreateMachinePanel();
@@ -27,6 +29,16 @@ public class MainFrame extends JFrame {
         analysePanel = new AnalysePanel();
         setActivePanel(createMachinePanel);
         pack();
+    }
+
+    private void initializeExternalFonts() {
+        GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        try {
+            graphicsEnvironment.registerFont(Font.createFont(Font.TRUETYPE_FONT,
+                    new File(getClass().getResource("/fonts/roboto-mono.ttf").toURI())));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initializeFrameProperties(){
