@@ -1,9 +1,9 @@
 package org.koxx4.gui;
 
-import org.koxx4.utilities.MachineDecoder;
-import org.koxx4.utilities.MooreMachineDecoder;
-import org.koxx4.utilities.SimpleStateEquationFormatter;
-import org.koxx4.utilities.SyntaxFormatter;
+import org.koxx4.decoding.MachineDecoder;
+import org.koxx4.decoding.MooreMachineDecoder;
+import org.koxx4.syntax.formating.SimpleStateEquationFormatter;
+import org.koxx4.syntax.formating.SyntaxFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +12,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 
 public class CreateMachinePanel extends JPanel {

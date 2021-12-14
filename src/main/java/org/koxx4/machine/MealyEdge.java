@@ -4,14 +4,17 @@ public class MealyEdge extends Edge{
 
     private final int outputValue;
 
-    public MealyEdge(String name, State startingState, State endingState, int outputValue) {
-        super(name, startingState, endingState);
+    public MealyEdge(String name, int index, int outputValue) {
+        super(name, index);
         this.outputValue = outputValue;
     }
-
 
     public int getOutputValue() {
         return outputValue;
     }
 
+    @Override
+    public String toString() {
+        return outputValue + getName() + getIndex();
+    }
 }

@@ -1,9 +1,12 @@
-package org.koxx4.utilities;
+package org.koxx4.syntax.formating;
+
+import org.koxx4.syntax.formating.SyntaxFormatter;
+import org.koxx4.utilities.ColorUtilities;
 
 import java.awt.*;
 import java.util.Stack;
 
-public class SimpleStateEquationFormatter implements SyntaxFormatter{
+public class SimpleStateEquationFormatter implements SyntaxFormatter {
 
     private final Color startingSyntaxColor = new Color(0,100,20);
 

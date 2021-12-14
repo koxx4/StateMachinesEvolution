@@ -1,4 +1,4 @@
-package org.koxx4.utilities;
+package org.koxx4.decoding;
 
 import org.koxx4.machine.InvalidStateMachineEquation;
 import org.koxx4.machine.StateMachine;

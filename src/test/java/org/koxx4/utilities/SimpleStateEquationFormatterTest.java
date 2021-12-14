@@ -1,10 +1,7 @@
 package org.koxx4.utilities;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsSame;
 import org.junit.Test;
-import org.hamcrest.CoreMatchers;
+import org.koxx4.syntax.formating.SimpleStateEquationFormatter;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
